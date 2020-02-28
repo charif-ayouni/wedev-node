@@ -1,10 +1,18 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
 
 
-app.get('/', function (req, res) {
-  res.send('Hello World')
+mongoose.connect('mongodb+srv://wedev:wedev@cluster0-umlrs.mongodb.net/wedev?retryWrites=true&w=majority',
+{
+  useNewUrlParser:true,
+  useUnifiedTopology:true
+}).catch(error => handleError(error));
+
+mongoose.connection.once('open',()=>{
+  console.log('database connect')
 })
 
-// serveur
-app.listen(3000)
+app.listen('3001', function () {
+  console.log('Express server listening on port 3001' )
+})
