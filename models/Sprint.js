@@ -16,7 +16,8 @@ const SprintSchema = new Schema({
     },
     statut :{
         type : String,
-        required : [true,( Error + 'satatus' )]
+        enum : ['en cours','terminé','à faire'],
+        required : [true,( Error + 'status' )]
     },
     tasks : [
         { 
@@ -39,7 +40,11 @@ const SprintSchema = new Schema({
             }  
         }
     ],
-    project : { type: Schema.Types.ObjectId, ref: 'Project' }
+    project : { 
+        type: Schema.Types.ObjectId, 
+        ref: 'Project',
+        require:[true,( Error + 'projet' )]
+    }
 
  })
 module.exports = mongoose.model('Sprint',SprintSchema);

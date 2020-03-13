@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Error = 'Veuillez remplir le champ '
+require('mongoose-type-email');
 
 const UserSchema = new Schema({
         firstname : {
@@ -20,10 +21,14 @@ const UserSchema = new Schema({
             required : [true,( Error + 'siret' )]
         },
         email :{ 
-            type : mongoose.SchemaTypes.Email,
+            type: mongoose.SchemaTypes.Email,
             required : [true,( Error + 'email' )],
             unique: true
         },  
+        password :{ 
+            type: String,
+            required : [true,( Error + 'password' )],
+        },
         phone :{ 
             type : Number,
             required : [true,( Error + 'téléphone' )],

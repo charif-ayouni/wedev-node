@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Error = 'Veuillez remplir le champ '
+require('mongoose-type-email');
 
 const CustomerSchema = new Schema({
     address : {

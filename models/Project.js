@@ -8,7 +8,7 @@ const ProjectSchema = new Schema({
         required: [true, (Error + 'titre')]
     },
    amount : {
-         type : String,
+         type : Number,
           required: [true, (Error + 'montant')]
     },
     deadlines_realization :{
@@ -34,10 +34,8 @@ const ProjectSchema = new Schema({
    },
    stacks : [
        {
-           name : {
-                    type : String,
-                    required: [true, (Error + 'stack')]
-            }
+            type : String,
+            required: [true, (Error + 'stack')]     
         }
    ],
    costumer : { type: Schema.Types.ObjectId, ref: 'Customer' },
