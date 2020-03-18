@@ -3,9 +3,20 @@ let Project = require('../models/Project')
 
 
 exports.getSprints = (req,res,next) => {
-    Sprint.find({project:req.params.id_project}).exec(function(err,sprints){
-        if(err){res.send(err)}
-        res.send(sprints)
+    Sprint.find({project:req.params.id_project},(err,result) => {
+        if(err){
+            res.status(400).json({'success' : false, 'error': err})
+        }
+        res.status(200).json({'success' : true, 'data': result})
+    })
+}
+
+exports.getSprint = (req,res,next) => {
+    Sprint.findById(req.params.id_sprint,(err,result) => {
+        if(err){
+            res.status(400).json({'success' : false, 'error': err})
+        }
+        res.status(200).json({'success' : true, 'data': result})
     })
 }
 
@@ -17,34 +28,42 @@ exports.addSprint = async(req,res,next) =>{
         "statut" : req.body.statut,
         "project" : req.params.id_project
     }
-     Project.findById(req.params.id_project).exec(function(err,project){
-        if(err){res.send(err)}
-         Sprint.create(sprintData,function(err,reslt){
-            if(err){res.send(err)}
-            Project.findByIdAndUpdate(req.params.id_project, { $push: { sprints: reslt._id } },function(err,reslt){
-                res.send(reslt)
-            })
-
-         })
-    });
+    
+    Project.findById(req.params.id_project,(err,project) => {
+        if(project){
+            Sprint.create(sprintData,function(err,reslt){
+                if(err){
+                   return res.status(400).json({'success' : false, message: 'Sprint was not created'})
+                }
+                Project.findByIdAndUpdate(req.params.id_project, { $push: { sprints: reslt._id } },function(err,reslt){
+                    res.status(200).json({'success' : true, message:'Sprint was Created successfully' })
+                })   
+             })
+        }
+      else{
+        return res.status(400).json({'success' : false, message: 'project not fount'})
+      }
+    })
 }
 
 exports.updateSprint = (req,res,next) => {
     
-    Sprint.findOneAndUpdate({_id:req.params.id_sprint}, req.body, function(err, doc) {
-        if (err) return res.send(500, {error: err});
-        return res.send('Succesfully saved.');
+    Sprint.findOneAndUpdate({_id:req.params.id_sprint}, req.body,(err, doc) => {
+        if (err) return res.status(400).json({'success' : false, message: 'failed to update'});
+        res.status(200).json({'success' : true, message:'Sprint was updated successfully' })
     });
 }
 
 exports.deleteSprint =async (req,res,next) =>{
 
-    Sprint.findById(req.params.id_sprint).then(sprint =>{
-
-        Project.findOneAndUpdate({_id:sprint.project}, { $pull: { sprints: sprint._id }}).catch(err => console.log(err));
-        Sprint.findOneAndDelete({_id:sprint._id}).catch(err =>  console.log(err));
-        res.send("sprint supprimée avec succès");
-
+    Sprint.findById(req.params.id_sprint ,(err,sprint) => {
+     if(err) return res.status(400).json({'success' : false, message: 'failed to delete'});
+     Project.findOneAndUpdate({_id:sprint.project}, { $pull: { sprints: sprint._id }},(err,result) => {
+        Sprint.findOneAndDelete({_id:sprint._id},(err,result) => {
+            res.status(200).json({'success' : true, message:'Sprint was delted successfully' })
+         })
+     })
+     
     })
 }   
 
@@ -58,24 +77,35 @@ exports.addTask = (req,res,next) =>{
         "time_realization" : req.body.time_realization
     }
     Sprint.findByIdAndUpdate(req.params.id_sprint,{$push:{tasks:taskData}},function(err,result){
-        if(err){res.send(err)} 
-        res.send(result)
+        if(err) return res.status(400).json({'success' : false, message: 'failed ! Sprint not found'});
+        res.status(200).json({'success' : true, message: 'Task was created successfully'});
     })
-   
 }
 
 exports.getTasks = (req,res,next) => {
 
     Sprint.findById(req.params.id_sprint,'tasks', function (err, tasks) {
-        if (err) {res.send(err) }
-        res.send(tasks);
+        if(err) return res.status(400).json({'success' : false, message: 'failed !'});
+        res.status(200).json({'success' : true, data: tasks});
     })
 }
+
 //not fixed
 exports.updateTask = (req,res,next) => {
 
-    Sprint.findOneAndUpdate({_id:req.params.id_sprint},{tasks}, function(err, sprint) {
-        if (err) return res.send(500, {error: err});
-       res.send(sprint)
+   let taskData = req.body; 
+   let id_sprint = req.params.id_sprint
+   let id_task = req.params.id_task
+    Sprint.findOneAndUpdate({_id:req.params.id_sprint},{ $set: { 'tasks.$':  { taskData} } }, function(err, sprint) {
+        if(err) return res.status(400).json({'success' : false, message: 'failed !'});
+        res.status(200).json({'success' : true, message: 'Task was updated successfully'});
+    });
+}
+//fixed
+exports.deleteTask = (req,res,next) => {
+
+    Sprint.findOneAndUpdate({_id:req.params.id_sprint},{ $pull: { tasks:  { _id: req.params.id_task} } }, function(err, sprint) {
+        if(err) return res.status(400).json({'success' : false, message: 'failed !'});
+        res.status(200).json({'success' : true, message: 'Task was deleted successfully'});
     });
 }

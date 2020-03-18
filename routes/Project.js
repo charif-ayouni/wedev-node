@@ -4,9 +4,11 @@ const Project = require('../controllers/Project');
 
 
 router.get('/projects', Project.getProjects);
-router.get('/user/:id_user/projects',Project.getProjectsByIdUser)
-router.get('/costumer/:id_costumer/projects',Project.getProjectsByIdCostumer)
 router.get('/projects/:id_project',Project.getProjectById)
+router.get('/projects/:id_user/users',Project.getProjectsByIdUser)
+router.get('/projects/:id_costumer/customers',Project.getProjectsByIdCostumer)
+router.get('/nbrproject/realized/:id_user',Project.getNumberProjectsRealized)
+router.get('/nbrprojects/inprogress/:id_user',Project.getNumberProjectsInProgress)
 
 router.post('/projects', Project.addProject);
 router.put('/projects/:id_project', Project.updateProject);

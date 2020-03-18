@@ -16,7 +16,7 @@ const SprintSchema = new Schema({
     },
     statut :{
         type : String,
-        enum : ['en cours','terminé','à faire'],
+        enum : ['to do','in progress','realized'],
         required : [true,( Error + 'status' )]
     },
     tasks : [
@@ -31,7 +31,7 @@ const SprintSchema = new Schema({
             },
             statut : {
                 type:String,
-                enum : ['terminée',' à faire', 'en cours'],
+                enum : ['to do', 'in progress','realized'],
                 require:[true,( Error + 'status' )]
             },
             time_realization : {

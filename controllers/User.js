@@ -17,23 +17,34 @@ exports.register = async(req, res, next) => {
         "profile" : req.body.profile
 
     }
-     User.create(userData ,function(err,result){
-         if(err){res.send(err)}
-         res.send(result)
+     User.create(userData ,(err,result) =>{
+         if(err) res.status(400).json({'success' : false, 'error': err})
+         res.status(200).json({'success' : true, 'message': 'User Succesfully saved'})
      })
     
 }
 
 exports.login =async (req,res,next) => {
-    let Email = req.body.email;
-    let Password = req.body.password
-    const result = await User.findOne({ email: Email })
-    console.log(result);
-    if (result && bcrypt.compareSync(Password, result.password)) {
+    let email = req.body.email;
+    let password = req.body.password
+    const result = await User.findOne({ email: email })
+    if (result && bcrypt.compareSync(password, result.password)) {
         const token = jwt.sign({id: result}, 'user');
-        res.send( {lvl : 'Your connexion is valide', token:token});
+        res.status(200).json({'success' : true, 'message': 'Your connexion is valide'});
     }
     else {
-         res.send( {lvl : ' Please verify your Email or Password '});
+        res.status(202).json({'success' : false, 'message': 'Please verify your Email or Password '});
     };
+}
+exports.getUser = (req,res,next) => {
+    User.findById(req.params.id_user,(err,result) =>{
+        if(err)  res.status(400).json({'success' : false, 'error': err})
+        res.status(200).json({'success' : true, 'data': result})
+    })
+}
+exports.getUsers = (req,res,next) => {
+    User.find((err,result) =>{
+        if(err)  res.status(400).json({'success' : false, 'error': err})
+        res.status(200).json({'success' : true, 'data': result})
+    })
 }
