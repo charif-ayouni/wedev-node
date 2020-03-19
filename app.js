@@ -8,7 +8,7 @@ const SprintRouter = require('./routes/Sprint')
 app.use(express.json());
 mongoose.set('useCreateIndex', true);
 
-mongoose.connect('mongodb+srv://wedev:wedev@cluster0-umlrs.mongodb.net/wedev?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://wedev:wedev@graphql-bqso0.mongodb.net/wedev?retryWrites=true&w=majority',
 {
   useNewUrlParser:true,
   useUnifiedTopology:true,
