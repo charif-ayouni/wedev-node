@@ -1,12 +1,16 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Error = 'Veuillez remplir le champ '
+const bcrypt = require('bcrypt');
 require('mongoose-type-email');
+
+const saltRounds = 10;
+const Error = 'Veuillez remplir le champ ';
+
 
 const UserSchema = new Schema({
         firstname : {
-                type : String,
-                required : [true, ( Error + 'nom' )]
+            type : String,
+            required : [true, ( Error + 'nom' )]
         },
         lastname : {
             type : String,
@@ -47,5 +51,32 @@ const UserSchema = new Schema({
 
         projects : [{type: Schema.Types.ObjectId, ref: 'Project'}]
 
- })
+ });
+
+UserSchema.pre('save', function(next) {
+    if (this.isNew || this.isModified('password')) {
+        const document = this;
+        bcrypt.hash(this.password, saltRounds, function(err, hashedPassword) {
+            if (err) {
+                next(err);
+            } else {
+                document.password = hashedPassword;
+                next();
+            }
+        });
+    } else {
+        next();
+    }
+});
+
+UserSchema.methods.isCorrectPassword = function(password, callback) {
+    bcrypt.compare(password, this.password, function(err, same) {
+        if (err) {
+            callback(err);
+        } else {
+            callback(err, same);
+        }
+    });
+};
+
 module.exports = mongoose.model('User',UserSchema);

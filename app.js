@@ -1,14 +1,22 @@
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
-const UserRouter = require('./routes/User');
-const ProjectRouter = require('./routes/Project');
-const CostomerRouter = require('./routes/Customer');
-const SprintRouter = require('./routes/Sprint')
-app.use(express.json());
-mongoose.set('useCreateIndex', true);
+const cors = require('cors');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const app = express();
+app.use(cors());
 
-mongoose.connect('mongodb+srv://wedev:wedev@graphql-bqso0.mongodb.net/wedev?retryWrites=true&w=majority',
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.json());
+app.use (cookieParser ());
+
+/* Database */
+require('dotenv').config();
+const DATABASE_URL = process.env.DATABASE_URL;
+
+mongoose.set('useCreateIndex', true);
+mongoose.connect(DATABASE_URL,
 {
   useNewUrlParser:true,
   useUnifiedTopology:true,
@@ -16,13 +24,19 @@ mongoose.connect('mongodb+srv://wedev:wedev@graphql-bqso0.mongodb.net/wedev?retr
 }).then(
   () => { console.log('Database is connected') },
   err => { console.log('Can not connect to the database' + err) }
-).catch(err=>console.log(err))
+).catch(err=>console.log(err));
 
+/* Routes */
+const User        = require('./routes/User');
+const Project     = require('./routes/Project');
+const Customer    = require('./routes/Customer');
+const Sprint      = require('./routes/Sprint');
 
-app.use(UserRouter);
-app.use(ProjectRouter);
-app.use(CostomerRouter);
-app.use(SprintRouter);
+app.use('/api/v1/user', User);
+app.use('/api/v1/project',Project);
+app.use('/api/v1/customer',Customer);
+app.use('/api/v1/sprint',Sprint);
+
 app.listen('3001', function () {
   console.log('Express server listening on port 3001' )
-})
+});
