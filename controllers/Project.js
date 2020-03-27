@@ -13,14 +13,15 @@ const add= async(req,res,next) =>{
         "statut" : req.body.statut,
         "cost_day" : req.body.cost_day,
         "stacks" : req.body.stacks,
-        "costumer" : req.body.costumer,
+        "customer" : req.body.customer,
         "user" :  req.body.user
     }
+    console.log(projectData)
     Project.create(projectData,(err,result) => {
         if (err) return res.status(400).json({'success' : false, 'error': err})
         id_project = result._id
         User.findByIdAndUpdate(req.body.user, { $push: { projects: id_project } },(err,result)=>{
-            Costumer.findByIdAndUpdate(req.body.costumer, { $push: { projects: id_project } },(err,result)=>{
+            Costumer.findByIdAndUpdate(req.body.customer, { $push: { projects: id_project } },(err,result)=>{
                 res.status(200).json({'success' : true, 'message': 'Succesfully saved'})
             })
         })
@@ -55,7 +56,7 @@ const list = (req,res,next) =>{
     })
 };
 const findById = (req,res,next) =>{
-    Project.findById(req.params.id,(err,result)=>{
+    Project.findById(req.params.id).populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
         if(err)  res.status(400).json({'success' : false, 'error': err})
         res.status(200).json({'success' : true, 'data': result})
     })

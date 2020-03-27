@@ -38,8 +38,8 @@ const ProjectSchema = new Schema({
             required: [true, (Error + 'stack')]     
         }
    ],
-   costumer : { type: Schema.Types.ObjectId, ref: 'Customer' },
-   user :  { type: Schema.Types.ObjectId, ref: 'User' },
+   customer : { type: Schema.Types.ObjectId, ref: 'Customer' ,required: [true, (Error + 'client')]    },
+   user :  { type: Schema.Types.ObjectId, ref: 'User',required: [true, (Error + 'utilisateur')]     },
    sprints : [{type: Schema.Types.ObjectId, ref: 'Sprint' }],   
  
 })

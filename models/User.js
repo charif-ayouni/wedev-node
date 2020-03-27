@@ -49,7 +49,8 @@ const UserSchema = new Schema({
             required : [true,( Error + 'profil' )]
         },
 
-        projects : [{type: Schema.Types.ObjectId, ref: 'Project'}]
+        projects : [{type: Schema.Types.ObjectId, ref: 'Project'}],
+        customers : [{type: Schema.Types.ObjectId, ref: 'Customer'}]
 
  });
 
