@@ -14,7 +14,7 @@ const add= async(req,res,next) =>{
         "cost_day" : req.body.cost_day,
         "stacks" : req.body.stacks,
         "customer" : req.body.customer,
-        "user" :  req.body.user
+        "user" :  req.id
     }
     console.log(projectData)
     Project.create(projectData,(err,result) => {
@@ -62,8 +62,9 @@ const findById = (req,res,next) =>{
     })
 }
 const filterByIdUser = (req,res) =>{
-
-        Project.find({user:req.params.id_user},(err,result)=>{
+     
+        Project.find({user:req.id},(err,result)=>{
+           
             if(err)  res.status(400).json({'success' : false, 'error': err})
             res.status(200).json({'success' : true, 'data': result})
         })
