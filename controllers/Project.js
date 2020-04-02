@@ -1,6 +1,6 @@
 const Project = require('../models/Project');
 const User = require('../models/User');
-const Costumer = require('../models/Customer');
+const Customer = require('../models/Customer');
 //const Sprint = require('../models/Sprint')
 
 const add= async(req,res,next) =>{
@@ -15,84 +15,84 @@ const add= async(req,res,next) =>{
         "stacks" : req.body.stacks,
         "customer" : req.body.customer,
         "user" :  req.id
-    }
-    console.log(projectData)
-    Project.create(projectData,(err,result) => {
-        if (err) return res.status(400).json({'success' : false, 'error': err})
-        id_project = result._id
-        User.findByIdAndUpdate(req.body.user, { $push: { projects: id_project } },(err,result)=>{
-            Costumer.findByIdAndUpdate(req.body.customer, { $push: { projects: id_project } },(err,result)=>{
+    };
+
+    Project.create(projectData,(err,project) => {
+        if (err) return res.status(400).json({'success' : false, 'error': err});
+        project_id = project._id;
+        User.findByIdAndUpdate(req.id, { $push: { projects: project_id } },(err,user)=>{
+            Customer.findByIdAndUpdate(req.body.customer, { $push: { projects: project_id } },(err,result)=>{
                 res.status(200).json({'success' : true, 'message': 'Succesfully saved'})
             })
         })
     })
-}
-const edit = (req,res,next) =>{
+};
+const edit = (req,res) =>{
 
     Project.findOneAndUpdate({_id:req.params.id}, req.body, {upsert: true}, function(err, doc) {
         if (err) return res.status(400).json({'success' : false, 'error': err})
         res.status(200).json({'success' : true, 'message': 'Succesfully updated'})
     });
 
-}
-const remove = async (req,res,next) =>{
+};
+const remove = async (req,res) =>{
 
     Project.findById(req.params.id,(err,project) => {
-        if(err)return res.status(400).json({'success' : false, 'message': 'Failed ! project not fount'})
-        User.findOneAndUpdate({_id:project.user}, { $pull: { projects: project._id }},(err,result)=>{
-            Costumer.findOneAndUpdate({_id:project.costumer}, { $pull: { projects: project._id }},(err,result)=>{
-                Project.findOneAndDelete({_id:project._id},(err,result)=>{
-                    if(err)return res.status(400).json({'success' : false, 'message': 'Failed to delete !'})
+        if(err)return res.status(400).json({'success' : false, 'message': 'Failed ! project not fount'});
+        User.findOneAndUpdate({_id:project.user}, { $pull: { projects: project._id }},(err,user)=>{
+            Customer.findOneAndUpdate({_id:project.customer}, { $pull: { projects: project._id }},(err,customer)=>{
+                Project.findOneAndDelete({_id:project._id},(err,project)=>{
+                    if(err)return res.status(400).json({'success' : false, 'message': 'Failed to delete !'});
                     res.status(200).json({'success' : true, 'message': 'Succesfully deleted'})
                 })
             })
         })
     })
-}
-const list = (req,res,next) =>{
-    Project.find().populate({ path: 'costumer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err})
+};
+const list = (req,res) =>{
+    Project.find().populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
+        if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
     })
 };
-const findById = (req,res,next) =>{
+const findById = (req,res) =>{
     Project.findById(req.params.id).populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err})
+        if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
     })
-}
+};
 const filterByIdUser = (req,res) =>{
      
         Project.find({user:req.id},(err,result)=>{
            
-            if(err)  res.status(400).json({'success' : false, 'error': err})
+            if(err)  res.status(400).json({'success' : false, 'error': err});
             res.status(200).json({'success' : true, 'data': result})
         })
         
-}
-const filterByIdCostumer = (req,res,next) =>{
+};
+const filterByIdCustomer = (req,res) =>{
 
-        Project.find({costumer:req.params.id_costumer},(err,result)=>{
-            if(err)  res.status(400).json({'success' : false, 'error': err})
+        Project.find({custumer:req.params.id_custumer},(err,result)=>{
+            if(err)  res.status(400).json({'success' : false, 'error': err});
             res.status(200).json({'success' : true, 'data': result})
         })
-}
-const getNumberProjectsInProgress = (req,res,next) => {
+};
+const getNumberProjectsInProgress = (req,res) => {
     
     Project.countDocuments({ statut:"in progress",user:req.params.id_user},(err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err})
+        if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
     })
           
-}
-const getNumberProjectsRealized = (req,res,next) => {
+};
+const getNumberProjectsRealized = (req,res) => {
     
     Project.countDocuments({ statut:"realized"},(err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err})
+        if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
     })
            
-}
+};
 
 module.exports = {
     add,
@@ -100,7 +100,7 @@ module.exports = {
     remove,
     list,
     filterByIdUser,
-    filterByIdCostumer,
+    filterByIdCustomer,
     findById,
     getNumberProjectsInProgress,
     getNumberProjectsRealized

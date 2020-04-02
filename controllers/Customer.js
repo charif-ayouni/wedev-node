@@ -3,9 +3,9 @@ const User = require('../models/User');
 
 
 const add= (req,res) => {
-    Customer.create(req.body,(err,result)=>{
+    Customer.create(req.body,(err,customer)=>{
         if(err)  res.status(400).json({'success' : false, 'error': err});
-        User.findByIdAndUpdate(req.params.id_user, { $push: { customers: result._id } },(err,result)=>{
+        User.findByIdAndUpdate(req.id, { $push: { customers: customer._id } },(err,user)=>{
             if(err)  res.status(400).json({'success' : false, 'error': err});
             res.status(200).json({'success' : true, 'message': 'Customer Succesfully saved'})
         })
@@ -24,9 +24,9 @@ const remove = (req,res) => {
     })
 };
 const list = (req,res) => {
-    User.find({_id:req.params.id_user})
+    User.find({_id:req.id})
     .select('customers')
-    .populate({ path: 'customers', select: ['firstname', 'lastname'] })
+    .populate('customers')
     .exec((err,result)=>{
         if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
