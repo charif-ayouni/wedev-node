@@ -18,7 +18,6 @@ const withAuth = function(req, res, next) {
                 res.status(401).send('Unauthorized: Invalid token');
             } else {
                 req.id = decoded.id;
-                console.log(req.id);
                 next();
             }
         });

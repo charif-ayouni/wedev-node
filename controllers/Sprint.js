@@ -1,29 +1,37 @@
 let Sprint = require('../models/Sprint');
 let Project = require('../models/Project');
 
-const add= async(req,res,next) =>{
-    let sprintData = {
+const add = async(req,res) =>{
+
+    let body = {
         "title" : req.body.title,
-        "start_date" : req.body.start_date,
-        "end_date" : req.body.end_date,
-        "statut" : req.body.statut,
-        "project" : req.params.id_project
+        "start_date" : new Date(req.body.start_date),
+        "end_date" : new Date(req.body.end_date),
+        "status" : req.body.status,
+        "project" : req.body.project,
+        "tasks" : req.body.tasks
     };
 
-    Project.findById(req.params.id_project,(err,project) => {
-        if(project){
-            Sprint.create(sprintData,function(err,reslt){
+    Project.findById(req.body.project,(err,project) => {
+        if( project ) {
+            Sprint.create(body,(err,sprint) => {
+
                 if(err){
-                    return res.status(400).json({'success' : false, message: 'Sprint was not created'})
+                    console.log(err);
+                    return res.status(500).json({'error' : 'Sprint was not created'})
                 }
-                Project.findByIdAndUpdate(req.params.id_project, { $push: { sprints: reslt._id } },function(err,reslt){
-                    res.status(200).json({'success' : true, message:'Sprint was Created successfully' })
-                })
+
+                project.sprints.push(sprint._id);
+                project.save();
+
+                res.status(200).json({'success' : 'Your sprint has been successfully created' })
+
             })
+        } else {
+            return res.status(500).json({'error' : 'project not found'})
         }
-        else{
-            return res.status(400).json({'success' : false, message: 'project not fount'})
-        }
+    }).catch(error => {
+        return res.status(500).json({'error' : error})
     })
 };
 const edit = (req,res,next) => {
@@ -51,6 +59,16 @@ const findOneById = (req,res,next) => {
         res.status(200).json({'success' : true, 'data': result})
     })
 };
+
+const list = (req,res) =>{
+    Sprint.find({ 'project': req.body.project_id }).populate('project').exec((err,sprints)=>{
+        if(err){
+            res.status(400).json({'success' : false, 'error': err});
+        }
+        res.status(200).json(sprints)
+    })
+};
+
 const filterByProjectId = (req,res,next) => {
     Sprint.find({project:req.params.id_project},(err,result) => {
         if(err){
@@ -106,6 +124,7 @@ module.exports = {
     add,
     edit,
     remove,
+    list,
     findOneById,
     filterByProjectId,
     addTask,

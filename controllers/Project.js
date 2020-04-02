@@ -49,10 +49,18 @@ const remove = async (req,res,next) =>{
     })
 }
 const list = (req,res,next) =>{
-    Project.find().populate({ path: 'costumer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err})
-        res.status(200).json({'success' : true, 'data': result})
+    Project.find().populate('customer').exec((err,projects)=>{
+        if(err){
+            res.status(400).json({'success' : false, 'error': err});
+        }
+        console.log(projects)
+        res.status(200).json(projects)
     })
+
+    /*Project.find().populate({ path: 'costumer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
+        if(err)  res.status(400).json({'success' : false, 'error': err})
+        res.status(200).json(result)
+    })*/
 };
 const findById = (req,res,next) =>{
     Project.findById(req.params.id,(err,result)=>{
