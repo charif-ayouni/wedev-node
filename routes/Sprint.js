@@ -3,9 +3,10 @@ const router = express.Router();
 const Sprint = require('../controllers/Sprint');
 
 //sprints router
-router.post('/add/:id_project',Sprint.add);
+router.post('/add',Sprint.add);
 router.put('/edit/:id',Sprint.edit);
 router.delete('/remove/:id_sprint',Sprint.remove);
+router.post('/list', Sprint.list);
 router.get('/:id',Sprint.findOneById);
 router.get('/sprints/:id_project',Sprint.filterByProjectId);
 

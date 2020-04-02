@@ -38,9 +38,20 @@ const ProjectSchema = new Schema({
             required: [true, (Error + 'stack')]     
         }
    ],
-   customer : { type: Schema.Types.ObjectId, ref: 'Customer' ,required: [true, (Error + 'client')]    },
-   user :  { type: Schema.Types.ObjectId, ref: 'User',required: [true, (Error + 'utilisateur')]     },
-   sprints : [{type: Schema.Types.ObjectId, ref: 'Sprint' }],   
+   customer : {
+       type: Schema.Types.ObjectId,
+       ref: 'Customer'
+   },
+   user :  {
+       type: Schema.Types.ObjectId,
+       ref: 'User'
+   },
+   sprints : [
+       {
+           type: Schema.Types.ObjectId,
+           ref: 'Sprint'
+       }
+   ],
  
-})
+});
 module.exports = mongoose.model('Project',ProjectSchema);

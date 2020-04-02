@@ -48,12 +48,21 @@ const remove = async (req,res) =>{
             })
         })
     })
-};
-const list = (req,res) =>{
-    Project.find().populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
-        res.status(200).json({'success' : true, 'data': result})
+
+}
+const list = (req,res,next) =>{
+    Project.find().populate('customer').exec((err,projects)=>{
+        if(err){
+            res.status(400).json({'success' : false, 'error': err});
+        }
+        console.log(projects)
+        res.status(200).json(projects)
     })
+
+    /*Project.find().populate({ path: 'costumer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
+        if(err)  res.status(400).json({'success' : false, 'error': err})
+        res.status(200).json(result)
+    })*/
 };
 const findById = (req,res) =>{
     Project.findById(req.params.id).populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
