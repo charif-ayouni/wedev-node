@@ -23,9 +23,9 @@ const ProjectSchema = new Schema({
              type : Date,
              required: [true,(Error + 'date de fin')]
    },
-   statut : {
+   status : {
              type : String,
-             enum : ['in progress','realized'],
+             enum : ['in_progress','realized'],
              required: [true, (Error + 'status')]
    },
    cost_day :{
