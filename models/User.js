@@ -38,7 +38,7 @@ const UserSchema = new Schema({
             required : [true,( Error + 'téléphone' )],
             unique: true
         },
-        company_statut :{ 
+        company_status :{
             type : String,
             enum : ['SAS','SASU','autoentrepreneur','EURL','SARL'],
             required : [true,( Error + 'statut de société' )]
