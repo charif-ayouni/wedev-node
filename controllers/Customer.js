@@ -24,12 +24,12 @@ const remove = (req,res) => {
     })
 };
 const list = (req,res) => {
-    User.find({_id:req.id})
+    User.findById(req.id)
     .select('customers')
     .populate('customers')
-    .exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
-        res.status(200).json({'success' : true, 'data': result})
+    .exec((err,data)=>{
+        if(err)  res.status(400).json(err);
+        res.status(200).json(data.customers)
     })
 };
 const findOne = (req,res) => {

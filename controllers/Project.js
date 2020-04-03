@@ -10,7 +10,7 @@ const add= async(req,res,next) =>{
         "deadlines_realization" : req.body.deadlines_realization,
         "start_date" : req.body.start_date,
         "end_date" : req.body.end_date,
-        "statut" : req.body.statut,
+        "status" : req.body.status,
         "cost_day" : req.body.cost_day,
         "stacks" : req.body.stacks,
         "customer" : req.body.customer,
@@ -55,14 +55,8 @@ const list = (req,res,next) =>{
         if(err){
             res.status(400).json({'success' : false, 'error': err});
         }
-        console.log(projects)
         res.status(200).json(projects)
     })
-
-    /*Project.find().populate({ path: 'costumer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err})
-        res.status(200).json(result)
-    })*/
 };
 const findById = (req,res) =>{
     Project.findById(req.params.id).populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
@@ -71,36 +65,28 @@ const findById = (req,res) =>{
     })
 };
 const filterByIdUser = (req,res) =>{
-     
-        Project.find({user:req.id},(err,result)=>{
-           
-            if(err)  res.status(400).json({'success' : false, 'error': err});
-            res.status(200).json({'success' : true, 'data': result})
-        })
-        
+    Project.find({user:req.id},(err,result)=>{
+        if(err)  res.status(400).json({'success' : false, 'error': err});
+        res.status(200).json({'success' : true, 'data': result})
+    })
 };
 const filterByIdCustomer = (req,res) =>{
-
-        Project.find({custumer:req.params.id_custumer},(err,result)=>{
-            if(err)  res.status(400).json({'success' : false, 'error': err});
-            res.status(200).json({'success' : true, 'data': result})
-        })
+    Project.find({custumer:req.params.id_custumer},(err,result)=>{
+        if(err)  res.status(400).json({'success' : false, 'error': err});
+        res.status(200).json({'success' : true, 'data': result})
+    })
 };
 const getNumberProjectsInProgress = (req,res) => {
-    
     Project.countDocuments({ statut:"in progress",user:req.params.id_user},(err,result)=>{
         if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
     })
-          
 };
 const getNumberProjectsRealized = (req,res) => {
-    
     Project.countDocuments({ statut:"realized"},(err,result)=>{
         if(err)  res.status(400).json({'success' : false, 'error': err});
         res.status(200).json({'success' : true, 'data': result})
     })
-           
 };
 
 module.exports = {
