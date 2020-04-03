@@ -50,7 +50,7 @@ const remove = async (req,res) =>{
     })
 
 }
-const list = (req,res,next) =>{
+const list = (req,res) =>{
     Project.find().populate('customer').exec((err,projects)=>{
         if(err){
             res.status(400).json({'success' : false, 'error': err});
@@ -59,9 +59,9 @@ const list = (req,res,next) =>{
     })
 };
 const findById = (req,res) =>{
-    Project.findById(req.params.id).populate({ path: 'customer', select: ['firstname', 'lastname'] }).exec((err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
-        res.status(200).json({'success' : true, 'data': result})
+    Project.findById(req.params.id).populate('customer').exec((err,project)=>{
+        if(err)  res.status(400).json(err);
+        res.status(200).json(project)
     })
 };
 const filterByIdUser = (req,res) =>{
