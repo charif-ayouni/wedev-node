@@ -4,27 +4,30 @@ const Error = 'Veuillez remplir le champ ';
 require('mongoose-type-email');
 
 const CustomerSchema = new Schema({
+    corporate_name : {
+        type : String,
+        required : [true,(Error + 'dénomination sociale')]
+    },
     address : {
         type : String,
         required : [true,(Error + 'adresse')]
     },
-    firstname : {
+    contact_firstname : {
         type : String,
         required : [true,(Error + 'npm')]
     },
-    lastname : {
+    contact_lastname : {
         type : String,
         required : [true,(Error + 'prenom')]
     },
-    phone : {
+    contact_phone : {
         type : String,
         required : [true,(Error + 'téléphone')]
     },
-    email :{ 
+    contact_email :{
         type : mongoose.SchemaTypes.Email,
-        required : [true,(Error + 'email')],
-        unique: true
-        },
+        required : [true,(Error + 'email')]
+    },
     projects : [{type: Schema.Types.ObjectId, ref: 'Project'}]
-})
+});
 module.exports = mongoose.model('Customer',CustomerSchema);

@@ -1,26 +1,25 @@
 const Customer = require('../models/Customer');
 const User = require('../models/User');
 
-
 const add= (req,res) => {
     Customer.create(req.body,(err,customer)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
+        if(err)  res.status(400).json(err);
         User.findByIdAndUpdate(req.id, { $push: { customers: customer._id } },(err,user)=>{
-            if(err)  res.status(400).json({'success' : false, 'error': err});
-            res.status(200).json({'success' : true, 'message': 'Customer Succesfully saved'})
+            if(err)  res.status(400).json(err);
+            res.status(200).json();
         })
     })
 };
 const edit = (req,res)  => {
-    Customer.findOneAndUpdate(req.params.id,req.body,(err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
-        res.status(200).json({'success' : true, 'message': 'Customer Succesfully updated'})
+    Customer.findOneAndUpdate(req.params.id,req.body,(err,customer)=>{
+        if(err)  res.status(400).json(err);
+        res.status(200).json(customer)
     })
 };
 const remove = (req,res) => {
-    Customer.findOneAndDelete({_id:req.params.id},(err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
-        res.status(200).json({'success' : true, 'message': 'Customer Succesfully deleted'})
+    Customer.findOneAndDelete({_id:req.params.id},(err,customer)=>{
+        if(err)  res.status(400).json(err);
+        res.status(200).json(customer)
     })
 };
 const list = (req,res) => {
@@ -33,9 +32,9 @@ const list = (req,res) => {
     })
 };
 const findOne = (req,res) => {
-    Customer.findById(req.params.id,(err,result)=>{
-        if(err)  res.status(400).json({'success' : false, 'error': err});
-        res.status(200).json({'success' : true, 'data': result})
+    Customer.findById(req.params.id,(err,customer)=>{
+        if(err)  res.status(400).json(err);
+        res.status(200).json(customer)
     })
 };
 
