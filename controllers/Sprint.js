@@ -51,17 +51,15 @@ const remove =async (req,res,next) =>{
 
     })
 };
-const findOneById = (req,res,next) => {
-    Sprint.findById(req.params.id,(err,result) => {
-        if(err){
-            res.status(400).json({'success' : false, 'error': err})
-        }
-        res.status(200).json({'success' : true, 'data': result})
+const findById = (req,res) => {
+    Sprint.findById(req.params.id,(err,sprint) => {
+        if(err) res.status(400).json(err);
+        res.status(200).json(sprint)
     })
 };
 
-const list = (req,res) =>{
-    Sprint.find({ 'project': req.body.project_id }).populate('project').exec((err,sprints)=>{
+const list = (req,res) => {
+    Sprint.find({ 'project': req.body.projectId }).populate('project').exec((err,sprints)=>{
         if(err){
             res.status(400).json({'success' : false, 'error': err});
         }
@@ -125,7 +123,7 @@ module.exports = {
     edit,
     remove,
     list,
-    findOneById,
+    findById,
     filterByProjectId,
     addTask,
     getTasks,

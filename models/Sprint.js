@@ -16,30 +16,9 @@ const SprintSchema = new Schema({
     },
     status :{
         type : String,
-        enum : ['to do','in progress','realized'],
+        enum : ['TO_DO','IN_PROGRESS','DONE'],
         required : [true,( Error + 'statut' )]
     },
-    tasks : [
-        { 
-            title : { 
-                type:String,
-                require:[true,( Error + 'titre' )]
-            },
-            description :{ 
-                type:String,
-                require:[true,( Error + 'description' )]
-            },
-            statut : {
-                type:String,
-                enum : ['to do', 'in progress','realized'],
-                require:[true,( Error + 'status' )]
-            },
-            time_realization : {
-                type:Number,
-                require:[true,( Error + 'temps de réalisation' )]
-            }  
-        }
-    ],
     project : { 
         type: Schema.Types.ObjectId, 
         ref: 'Project',

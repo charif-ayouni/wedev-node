@@ -31,11 +31,13 @@ const User        = require('./routes/User');
 const Project     = require('./routes/Project');
 const Customer    = require('./routes/Customer');
 const Sprint      = require('./routes/Sprint');
+const Task        = require('./routes/Task');
 
 app.use('/api/v1/user', User);
 app.use('/api/v1/project',Project);
 app.use('/api/v1/customer',Customer);
 app.use('/api/v1/sprint',Sprint);
+app.use('/api/v1/task',Task);
 
 app.listen('3001', function () {
   console.log('Express server listening on port 3001' )
