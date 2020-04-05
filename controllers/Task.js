@@ -9,6 +9,13 @@ const add = async(req,res) => {
     });
 };
 
+const edit = (req,res,next) => {
+    Task.findOneAndUpdate({_id:req.params.id}, req.body,(err, task) => {
+        if (err) return res.status(400).json(err);
+        res.status(200).json(task)
+    });
+};
+
 const list = (req,res) => {
     Task.find({ sprint : req.body.sprintId }).sort({order : 1}).exec(function (err, tasks){
         if(err)  res.status(400).json(err);
@@ -35,6 +42,7 @@ const setOrder = (req,res) => {
 
 module.exports = {
     add,
+    edit,
     list,
     findById,
     setOrder
