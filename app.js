@@ -41,6 +41,9 @@ app.use('/api/v1/sprint',Sprint);
 app.use('/api/v1/task',Task);*/
 app.use('/api/v1/api',Api);
 
-app.listen('3001', function () {
-  console.log('Express server listening on port 3001' )
+let server_port = process.env.YOUR_PORT || process.env.PORT || 80;
+let server_host = process.env.YOUR_HOST || '0.0.0.0';
+
+app.listen(server_port, server_host, function () {
+  console.log('Express server listening on port 80' )
 });
